@@ -85,13 +85,16 @@ class Forecaster(nn.Module):
         else:
             n_left = n_left
             n_right = n_right
-
+        
         if net_type == 'mlp':
             self.left_model  = nn.ModuleList([MLPEstimator(in_c=in_c, out_c=out_c, hidden=hidden, factor=factor) for _ in range(n_left)])
             self.right_model = nn.ModuleList([MLPEstimator(in_c=in_c, out_c=out_c, hidden=hidden, factor=factor) for _ in range(n_right)])
         elif net_type == 'linear':
             self.left_model  = nn.ModuleList([Linear(in_c=in_c, out_c=out_c, factor=factor) for _ in range(n_left)])
             self.right_model = nn.ModuleList([Linear(in_c=in_c, out_c=out_c, factor=factor) for _ in range(n_right)])
+         elif net_type == 'rational':
+            self.left_model  = nn.ModuleList([MLPEstimatorRational(in_c=in_c, out_c=out_c, hidden=hidden, factor=factor) for _ in range(n_left)])
+            self.right_model = nn.ModuleList([MLPEstimatorRational(in_c=in_c, out_c=out_c, hidden=hidden, factor=factor) for _ in range(n_right)])
         elif net_type in ['conv', 'fno']:
             self.left_model  = nn.ModuleList([ConvNetEstimator(in_c=in_c, out_c=out_c, hidden=hidden, factor=factor, net_type=net_type) for _ in range(n_left)])
             self.right_model = nn.ModuleList([ConvNetEstimator(in_c=in_c, out_c=out_c, hidden=hidden, factor=factor, net_type=net_type) for _ in range(n_right)])
