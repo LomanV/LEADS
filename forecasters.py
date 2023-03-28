@@ -92,7 +92,7 @@ class Forecaster(nn.Module):
         elif net_type == 'linear':
             self.left_model  = nn.ModuleList([Linear(in_c=in_c, out_c=out_c, factor=factor) for _ in range(n_left)])
             self.right_model = nn.ModuleList([Linear(in_c=in_c, out_c=out_c, factor=factor) for _ in range(n_right)])
-         elif net_type == 'rational':
+        elif net_type == 'rational':
             self.left_model  = nn.ModuleList([MLPEstimatorRational(in_c=in_c, out_c=out_c, hidden=hidden, factor=factor) for _ in range(n_left)])
             self.right_model = nn.ModuleList([MLPEstimatorRational(in_c=in_c, out_c=out_c, hidden=hidden, factor=factor) for _ in range(n_right)])
         elif net_type in ['conv', 'fno']:
