@@ -56,6 +56,14 @@ def train_leads(dataset_name, exp_type, path, device):
         optimizer = optim.Adam(net.parameters(), lr=1.e-3, betas=(0.9, 0.999))
         lambda_inv = 1 / 5e3
         factor_lip = 1.e-2
+    elif dataset_name == 'lv_rational':
+        n_env = 10
+        net = Forecaster(in_c=2, out_c=2, n_env=n_env, hidden=64, net_type='rational', factor=1., method='rk4', decomp_type=decomp_type)
+        init_weights(net, init_type='normal', init_gain=0.05)
+        train, test = init_dataloaders('lv')
+        optimizer = optim.Adam(net.parameters(), lr=1.e-3, betas=(0.9, 0.999))
+        lambda_inv = 1 / 5e3
+        factor_lip = 1.e-2
     elif dataset_name == 'gs':
         n_env = 3
         net = Forecaster(in_c=2, out_c=2, n_env=n_env, hidden=64, net_type='conv', factor=1.e-3, method='rk4', decomp_type=decomp_type)
