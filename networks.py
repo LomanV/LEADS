@@ -14,7 +14,7 @@ import functools
 from scipy import ndimage
 from torch.nn import Parameter
 
-
+from rational.torch import Rational
 #################################################################################
 # Credit for Swish                                                              #
 #                                                                               #
@@ -65,6 +65,32 @@ class MLPEstimator(nn.Module):
             x = x.transpose(2, 1)
         return x
 
+    
+class MLPEstimatorRational(nn.Module):
+    def __init__(self, in_c, out_c, hidden, factor):
+        super().__init__()
+        bias = True
+        self.net = nn.Sequential(
+            nn.Linear(in_c, hidden, bias=bias),
+            Rational(),
+            nn.Linear(hidden, hidden, bias=bias),
+            Rational(),
+            nn.Linear(hidden, hidden, bias=bias),
+            Rational(),
+            nn.Linear(hidden, out_c, bias=bias),
+        )
+        self.factor = factor
+    
+    def forward(self, x):
+        flatten = x.dim() == 3
+        if flatten:
+            batch_size, nc, T = x.shape
+            x = x.transpose(2, 1)
+        x = self.net(x) * self.factor
+        if flatten:
+            batch_size, nc, T = x.shape
+            x = x.transpose(2, 1)
+        return x
 #####################################################################################
 # Credit for SpectralConv2d_fast, FNO2d                                             #
 #                                                                                   #
